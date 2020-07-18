@@ -49,9 +49,7 @@ def get_time_intervals(regex, subtitle):
     timestamps = {}
     # Build search_str while computing time_stamps by adding one word and one space at a time
     search_str = ''
-    times = [times[i] for i in range(len(times)) if i==len(times)-1 or parse_time(times[i+1])-parse_time(times[i]) > 0.011]
     words = list(words)
-    assert len(times) == len(words), (len(times), len(words), list(zip(times, words)))
     for word, time in zip(words, times):
         timestamps[len(search_str)] = time
         search_str += word + ' '
@@ -86,7 +84,7 @@ def download_subtitles(video_ids):
         try:
             with open(subtitle_filename(video_id)) as f:
                 yield video_id, f.read()
-        except:
+        except IOError:
             print(f"WARNING: {video_id} lacks automatic captions")
 
 def parse_time(time):
