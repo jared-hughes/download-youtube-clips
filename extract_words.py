@@ -83,8 +83,11 @@ def download_subtitles(video_ids):
             # assume downloaded subtitle is correct
             ydl.download(undownloaded)
     for video_id in video_ids:
-        with open(subtitle_filename(video_id)) as f:
-            yield video_id, f.read()
+        try:
+            with open(subtitle_filename(video_id)) as f:
+                yield video_id, f.read()
+        except:
+            print(f"WARNING: {video_id} lacks automatic captions")
 
 def parse_time(time):
     h,m,s = [float(t) for t in time.split(":")]
