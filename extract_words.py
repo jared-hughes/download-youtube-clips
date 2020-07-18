@@ -42,6 +42,9 @@ def get_time_intervals(regex, subtitle):
         (m.group("time1") or m.group("time2"), m.group("word1") or m.group("word2"))
         for m in TIME_WORD_REGEX.finditer(subtitle)
     ]
+    # Incorrect format, which would lead to trouble zipping
+    if len(time_words) == 0:
+        return []
     times, words = zip(*time_words)
     # Quickly search lines starting from the end
     final_time = next(match.group("time") for line in reversed(subtitle.split("\n")) for match in [re.search(FINAL_TIME_REGEX, line)] if match)
