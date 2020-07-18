@@ -7,5 +7,5 @@
 # $5: format, as accepted by youtube-dl (default: best)
 # other args are passed directly to youtube-dl; eg, -r 40K
 fmt=${5:-best}
-url="$(youtube-dl --get-url "$1" -f $fmt ${@:5})"
+url="$(youtube-dl --get-url -f $fmt ${@:5} -- "$1")"
 ffmpeg -loglevel warning -hide_banner -ss $2 -i "$url" -c copy -t $3 "$4"
