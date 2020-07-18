@@ -108,17 +108,23 @@ def download_intervals(video_id, intervals):
             time.sleep(2)
 
 
-def download_clips(regex, video_ids, dry=False):
+def download_clips(regex, video_ids, dry=False, limit=1):
     video_ids = [video_id[:11] for video_id in video_ids]
+    num_remaining = limit
     for i, (video_id, subtitle) in enumerate(download_subtitles(video_ids)):
         print(f"[info] considering video {i+1}/{len(video_ids)}: {video_id}")
         if not subtitle:
             print(f"WARNING: {video_id} lacks automatic captions")
             continue
         intervals = list(get_time_intervals(regex, subtitle))
+        intervals = intervals[:num_remaining] if num_remaining > 0 else intervals
+        num_remaining -= len(intervals)
         if dry:
             print("[intervals]", intervals)
         else:
             download_intervals(video_id, intervals)
+        if num_remaining == 0:
+            break
 
-download_clips(r"(as always)? have a nice day", ["5pGepIfFxzQ", "bIC0x8OSNzg", "d-hBDjYtE1U", "Pa6VWW7zYJw", "qYbNxE_SEIk", "81gXBVKF19o", "nOqDkdekaVE", "qvacFG9GyOM", "8b9y8QvxenU", "H6MuZhzqKGA", "avwt39uHDOQ", "oFktnCdbavA", "pTys_WYBOLE", "1lLiDnFTsOk", "D1ejvQ0UUNY", "vn0xMtHhgSQ", "JDNoMbjxBMI", "94z0OJ_-4Lo", "vMulHvAznwM", "D0foSHWP7rc", "EdD5oS5yaqg", "o6lteqXZdrA", "26OYMHIhK2U", "aY36o7JY4bo", "DvkSYh2dkN8", "WqE3leevbdg", "lF0uiRS8asc", "pLUGPqw0oks", "ZpX2b2t00Lg", "soyWGLnzeeI", "Gl7gt0SeBi8", "uPqwp7TPGzQ", "-d760fMfiNc", "mG9RHjC9rTM", "uukkzSy3Aw8", "EA5wr3qTVOc", "YzncNl6N18s", "c2DcfJLquOk", "J5Kxm8I1BXU", "mjArO09tGaI", "_iEP_uKOdrQ", "ZW3s1iks0No", "8WkNoA_ki9c", "njU3r3aWm3k", "ixPFDFp8Cfo", "nk6KrBsDwDE", "-aOh4D2GKaw", "TTcrdX7dIZ8", "v_IPY3MM3Yc", "lkfBKQuLkRc", "Cw0EPb3S8v4", "APvmp-rp_D0", "Csa01fsnCQE", "K2KNc4g-0yI", "bLIawIQp3pk", "jHTpW7euAns", "M7q0Qbpa34U", "DuZWhRaLzhk", "lqUapRX9EsY", "isQPh9Gx0q4", "n0cUqNwYcoI", "Joed0P3hhbc", "RR31o8x1OvU", "rco9WLJ82u0", "3N84iZ68cXQ", "OvzMEwVnB2w", "VAIONzHzlXk", "ogELZ78OfyM", "KHvfwpnPwwU", "pRdT07TSSs0", "BO_XEpdw2jA", "ZCKw0nWkpfs", "XXW27KKHtc8", "onHJuyDjbsM", "Tfm-W_DSdXw", "EpDMsPgnh_M", "dTObKtHzroM", "7L8XvasJzdQ", "EXHjirjUJUk", "KcZPIfIbG5o", "0SEHUqkbIjU", "a_oAkbzSKxo", "WAtxEpMDeNk", "oZLNQl0bk1c", "_rGvb2yYh1M", "nz6NxH3wy94", "ToQT_i4I6vI", "ANsipsS7IK8", "T5YsZLJ5FjY", "uUVye2mdwew", "QgOpSFyin8M", "mgWEIiIfGsQ", "z4lVylO7y5U", "TU3nNaIkQLQ", "9_wvQGdCF94", "u2HUXZ61EY8", "78GFp2zTPoo", "6DA92d93FRI", "ke418cAUcPs", "ympVA0GW1jE", "6RSXQsYYso4", "D5Y7R7-4FnA", "wOedgb2zC5s", "slwqiGh0Fak", "nHJWcFe27S0", "EIQkBlo1L8k", "uK3BbETDYis", "_C7bJiFTfFs", "q8AP5XYs8jg", "Zhz9g6A_fuI", "Chu4mvEUc5I", "U__RaOy39Sg", "i7g-TvczpSw", "rbf_NX0-Uj0", "mAyTv64YkTI", "va7PBIQ4CJ8", "Um2Me3Iuv5Q", "nmL-fwtjVUA", "GD0JbDyGOsA", "MK83CkvLbcQ", "i_xZSTF_Uq0", "kSZuVW_1yi8", "cNHY90uQ2eY", "iqsAjzm-qtA", "oPiCgf4U6oE", "hnj8gGf2e7E", "NQjH3-6Qm7c", "o5BRy93769U", "1D_vCWzX_Rw", "5kWBZz7dFxw", "SUfOQ5XeS5Q", "nDgC8JOQhiM"])
+videos = ["5pGepIfFxzQ", "bIC0x8OSNzg", "d-hBDjYtE1U", "Pa6VWW7zYJw", "qYbNxE_SEIk", "81gXBVKF19o", "nOqDkdekaVE", "qvacFG9GyOM", "8b9y8QvxenU", "H6MuZhzqKGA", "avwt39uHDOQ", "oFktnCdbavA", "pTys_WYBOLE", "1lLiDnFTsOk", "D1ejvQ0UUNY", "vn0xMtHhgSQ", "JDNoMbjxBMI", "94z0OJ_-4Lo", "vMulHvAznwM", "D0foSHWP7rc", "EdD5oS5yaqg", "o6lteqXZdrA", "26OYMHIhK2U", "aY36o7JY4bo", "DvkSYh2dkN8", "WqE3leevbdg", "lF0uiRS8asc", "pLUGPqw0oks", "ZpX2b2t00Lg", "soyWGLnzeeI", "Gl7gt0SeBi8", "uPqwp7TPGzQ", "-d760fMfiNc", "mG9RHjC9rTM", "uukkzSy3Aw8", "EA5wr3qTVOc", "YzncNl6N18s", "c2DcfJLquOk", "J5Kxm8I1BXU", "mjArO09tGaI", "_iEP_uKOdrQ", "ZW3s1iks0No", "8WkNoA_ki9c", "njU3r3aWm3k", "ixPFDFp8Cfo", "nk6KrBsDwDE", "-aOh4D2GKaw", "TTcrdX7dIZ8", "v_IPY3MM3Yc", "lkfBKQuLkRc", "Cw0EPb3S8v4", "APvmp-rp_D0", "Csa01fsnCQE", "K2KNc4g-0yI", "bLIawIQp3pk", "jHTpW7euAns", "M7q0Qbpa34U", "DuZWhRaLzhk", "lqUapRX9EsY", "isQPh9Gx0q4", "n0cUqNwYcoI", "Joed0P3hhbc", "RR31o8x1OvU", "rco9WLJ82u0", "3N84iZ68cXQ", "OvzMEwVnB2w", "VAIONzHzlXk", "ogELZ78OfyM", "KHvfwpnPwwU", "pRdT07TSSs0", "BO_XEpdw2jA", "ZCKw0nWkpfs", "XXW27KKHtc8", "onHJuyDjbsM", "Tfm-W_DSdXw", "EpDMsPgnh_M", "dTObKtHzroM", "7L8XvasJzdQ", "EXHjirjUJUk", "KcZPIfIbG5o", "0SEHUqkbIjU", "a_oAkbzSKxo", "WAtxEpMDeNk", "oZLNQl0bk1c", "_rGvb2yYh1M", "nz6NxH3wy94", "ToQT_i4I6vI", "ANsipsS7IK8", "T5YsZLJ5FjY", "uUVye2mdwew", "QgOpSFyin8M", "mgWEIiIfGsQ", "z4lVylO7y5U", "TU3nNaIkQLQ", "9_wvQGdCF94", "u2HUXZ61EY8", "78GFp2zTPoo", "6DA92d93FRI", "ke418cAUcPs", "ympVA0GW1jE", "6RSXQsYYso4", "D5Y7R7-4FnA", "wOedgb2zC5s", "slwqiGh0Fak", "nHJWcFe27S0", "EIQkBlo1L8k", "uK3BbETDYis", "_C7bJiFTfFs", "q8AP5XYs8jg", "Zhz9g6A_fuI", "Chu4mvEUc5I", "U__RaOy39Sg", "i7g-TvczpSw", "rbf_NX0-Uj0", "mAyTv64YkTI", "va7PBIQ4CJ8", "Um2Me3Iuv5Q", "nmL-fwtjVUA", "GD0JbDyGOsA", "MK83CkvLbcQ", "i_xZSTF_Uq0", "kSZuVW_1yi8", "cNHY90uQ2eY", "iqsAjzm-qtA", "oPiCgf4U6oE", "hnj8gGf2e7E", "NQjH3-6Qm7c", "o5BRy93769U", "1D_vCWzX_Rw", "5kWBZz7dFxw", "SUfOQ5XeS5Q", "nDgC8JOQhiM"]
+download_clips(r"inexcusable", videos, limit=2)
