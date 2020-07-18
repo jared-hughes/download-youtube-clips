@@ -88,7 +88,7 @@ def download_subtitles(video_ids):
             with open(subtitle_filename(video_id)) as f:
                 yield video_id, f.read()
         except IOError:
-            print(f"WARNING: {video_id} lacks automatic captions")
+            yield video_id, ""
 
 def parse_time(time):
     h,m,s = [float(t) for t in time.split(":")]
@@ -110,8 +110,11 @@ def download_intervals(video_id, intervals):
 
 def download_clips(regex, video_ids, dry=False):
     video_ids = [video_id[:11] for video_id in video_ids]
-    for video_id, subtitle in download_subtitles(video_ids):
-        print("[info] considering video", video_id)
+    for i, (video_id, subtitle) in enumerate(download_subtitles(video_ids)):
+        print(f"[info] considering video {i+1}/{len(video_ids)}: {video_id}")
+        if not subtitle:
+            print(f"WARNING: {video_id} lacks automatic captions")
+            continue
         intervals = list(get_time_intervals(regex, subtitle))
         if dry:
             print("[intervals]", intervals)
