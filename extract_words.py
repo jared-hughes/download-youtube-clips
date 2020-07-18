@@ -5,6 +5,10 @@ import subprocess
 import time
 import os
 
+# seconds
+RIGHT_PAD = 0.4
+LEFT_PAD = 0.3
+
 class Interval:
     def __init__(self, start_time, end_time, match_string):
         """
@@ -63,15 +67,14 @@ def get_time_intervals(regex, subtitle):
             match.group(0)
         )
 
-SUBTITLES_PREFIX = "subtitles/"
 def subtitle_filename(video_id):
-    return f"{SUBTITLES_PREFIX}{video_id}.en.vtt"
+    return f"subtitles/{video_id}.en.vtt"
 
 def download_subtitles(video_ids):
     ydl_opts = {
         'skip_download': True,
         'writeautomaticsub': True,
-        'outtmpl': SUBTITLES_PREFIX+'%(id)s',
+        'outtmpl': 'subtitles/%(id)s',
         'subtitleslangs': ['en']
     }
     undownloaded = [video_id for video_id in video_ids if not os.path.isfile(subtitle_filename(video_id))]
@@ -89,11 +92,14 @@ def parse_time(time):
 
 def download_intervals(video_id, intervals):
     for i in intervals:
-        duration = parse_time(i.end_time) - parse_time(i.start_time)
-        sanitized_match = re.sub('[^a-zA-Z0-9_-]', '_', i.match_string)
+        start = parse_time(i.start_time)
+        end = parse_time(i.end_time)
+        start = start - LEFT_PAD
+        duration = end - start + RIGHT_PAD
+        sanitized_match_string = re.sub('[^a-zA-Z0-9_-]', '_', i.match_string)
         filename = f"clips/{video_id}+{sanitized_match_string}+{i.start_time}.mp4"
         if not os.path.isfile(filename):
-            subprocess.run(['bash', 'download_clip.bash', video_id, i.start_time, str(duration), filename])
+            subprocess.run(['bash', 'download_clip.bash', video_id, str(start), str(duration), filename])
 
 def download_clips(regex, video_ids, dry=False):
     video_ids = [video_id[:11] for video_id in video_ids]
