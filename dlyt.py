@@ -36,16 +36,19 @@ def new_project(args):
 
 def add_videos(args):
     state = json.load(args.project)
-    videos = set(state["videos"])
-    videos |= set(args.videos)
+    videos = state["videos"]
+    for video in args.videos:
+        if video not in videos:
+            videos.append(video)
     state["videos"] = list(videos)
     dump_json(state, args.project)
 
 def remove_videos(args):
     state = json.load(args.project)
     args.videos = args.videos or state["videos"]
-    videos = set(state["videos"])
-    videos -= set(args.videos)
+    videos = state["videos"]
+    for video in args.videos:
+        videos.remove(video)
     state["videos"] = list(videos)
     dump_json(state, args.project)
 
@@ -64,15 +67,12 @@ def word_index(intervals, index, is_start):
             ind = i
             if is_start:
                 return ind
-        # if intervals[i].start_index <= index - 1:
-        #     return ind
 
 def actual_intervals(intervals, start_word, end_word):
     return intervals[word_index(intervals, start_word, True): word_index(intervals, end_word, False)+1]
 
 def words_from_intervals(intervals, start, end):
     return ' '.join(interval.match_string for interval in actual_intervals(intervals, start, end))
-
 
 def _download_clips(stdscr, args):
     print("downloading clips")
