@@ -2,4 +2,5 @@
 ids = [...document.querySelectorAll("#primary #video-title[href]")]
  .map(e=>/\?v=(.*)/.exec(e.href)[1])
  .map(e=>e.slice(0,11))
-console.log(`["${ids.join('", "')}"]`)
+// console.log(`["${ids.join('", "')}"]`)
+console.log(`"${ids.join('" "')}"`)
