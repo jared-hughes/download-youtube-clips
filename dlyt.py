@@ -20,9 +20,7 @@ parser = argparse.ArgumentParser(
 )
 
 default_state = {
-    "videos": [],
-    "accepted_intervals": [],
-    "denied_intervals": [],
+    "videos": []
 }
 
 def dump_json(state, project_file):
