@@ -75,7 +75,6 @@ def words_from_intervals(intervals, start, end):
     return ' '.join(interval.match_string for interval in actual_intervals(intervals, start, end))
 
 def _download_clips(stdscr, args):
-    print("downloading clips")
     # When the spagetti makes you cry just like a pasta e fasul
     # That's amore
     # hide cursor
@@ -84,11 +83,11 @@ def _download_clips(stdscr, args):
     state = json.load(args.project)
     videos = args.videos or state["videos"]
     # height, width, starty, startx
-    video_num_win = curses.newwin(1, 26, 0, 0)
-    interval_num_win = curses.newwin(1, 16, 1, 0)
-    current_string_win = curses.newwin(5, curses.COLS, 3, 0)
-    controls_win = curses.newwin(3, 46, 9, 0)
-    debug_win = curses.newwin(10, 50, 15, 0)
+    video_num_win = curses.newwin(1, 36, 0, 0)
+    interval_num_win = curses.newwin(1, 26, 1, 0)
+    current_string_win = curses.newwin(6, curses.COLS, 3, 0)
+    controls_win = curses.newwin(3, 46, 10, 0)
+    debug_win = curses.newwin(10, 50, 16, 0)
     import time
     for j, (video_id, word_intervals, match_intervals) in enumerate(extract_words.search_in_videos(videos, args.regex)):
         video_num_win.clear()
@@ -129,9 +128,9 @@ def _download_clips(stdscr, args):
                 )
                 controls_win.refresh()
 
-                debug_win.clear()
-                debug_win.addstr(0, 0, str(word_intervals[1]))
-                debug_win.refresh()
+                # debug_win.clear()
+                # debug_win.addstr(0, 0, str(word_intervals[1]))
+                # debug_win.refresh()
                 # wrap doesn't respect word boundaries, but not high priority rn
                 current_string_win.clear()
                 current_string_win.addstr(0, 0, left_context_words + " ", curses.A_DIM)
